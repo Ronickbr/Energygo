@@ -90,7 +90,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex items-center justify-center h-full">
+    <div className="flex items-center justify-center"> {/* Removido h-full */}
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Meu Perfil</CardTitle>

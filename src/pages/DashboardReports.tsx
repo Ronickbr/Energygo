@@ -21,7 +21,7 @@ const DashboardReports = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+      <div className="flex flex-col items-center justify-center p-4 text-center"> {/* Removido h-full */}
         <h2 className="text-2xl font-bold text-destructive">Erro ao carregar dados</h2>
         <p className="text-muted-foreground mt-2">{error}</p>
         <Button onClick={() => navigate("/")} className="mt-4">
@@ -35,7 +35,7 @@ const DashboardReports = () => {
   const totalCost = dailyConsumption.reduce((sum, data) => sum + data.cost, 0);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col"> {/* Removido h-full */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Relatórios de Consumo</h1>
       </div>
