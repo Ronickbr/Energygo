@@ -10,13 +10,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { showSuccess, showError } from "@/utils/toast";
 import { updatePassword } from "firebase/auth";
 import { Separator } from "@/components/ui/separator";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
 
 const Profile = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, loading: loadingAuth } = useAuth(); // Usar loadingAuth do AuthContext
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false); // Estado de carregamento para o formulário de senha
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +37,7 @@ const Profile = () => {
       return;
     }
 
-    setLoading(true);
+    setLoadingSubmit(true);
     try {
       await updatePassword(currentUser, newPassword);
       showSuccess("Senha atualizada com sucesso!");
@@ -46,9 +47,13 @@ const Profile = () => {
       showError(`Falha ao atualizar senha: ${error.message}`);
       console.error("Password update error:", error);
     } finally {
-      setLoading(false);
+      setLoadingSubmit(false);
     }
   };
+
+  if (loadingAuth) {
+    return <LoadingSpinner message="Carregando dados do perfil..." />;
+  }
 
   return (
     <div className="flex items-center justify-center h-full">
@@ -98,8 +103,8 @@ const Profile = () => {
                   minLength={6}
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Atualizando..." : "Atualizar Senha"}
+              <Button type="submit" className="w-full" disabled={loadingSubmit}>
+                {loadingSubmit ? "Atualizando..." : "Atualizar Senha"}
               </Button>
             </form>
           </div>

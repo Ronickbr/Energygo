@@ -7,16 +7,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { showSuccess, showError } from "@/utils/toast";
+import { useAuth } from "@/context/AuthContext"; // Importar useAuth
+import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false); // Renomeado para evitar conflito
   const navigate = useNavigate();
+  const { loading: loadingAuth } = useAuth(); // Obter estado de carregamento de autenticação
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setLoadingSubmit(true);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       showSuccess("Conta criada com sucesso! Faça login para continuar.");
@@ -25,9 +28,13 @@ const SignUp = () => {
       showError(`Falha no registro: ${error.message}`);
       console.error("Sign up error:", error);
     } finally {
-      setLoading(false);
+      setLoadingSubmit(false);
     }
   };
+
+  if (loadingAuth) {
+    return <LoadingSpinner message="Verificando sessão..." />;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
@@ -61,8 +68,8 @@ const SignUp = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Cadastrando..." : "Cadastrar"}
+            <Button type="submit" className="w-full" disabled={loadingSubmit}>
+              {loadingSubmit ? "Cadastrando..." : "Cadastrar"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
