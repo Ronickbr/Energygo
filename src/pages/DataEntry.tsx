@@ -62,7 +62,7 @@ const DataEntry = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+    <div className="flex items-center justify-center min-h-screen bg-background p-4"> {/* min-h-screen e p-4 removidos, agora no Layout */}
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Registrar Leitura de Energia</CardTitle>
@@ -98,11 +98,7 @@ const DataEntry = () => {
               </Button>
             </form>
           </Form>
-          <div className="mt-4 text-center text-sm">
-            <Button variant="link" onClick={() => navigate("/")}>
-              Voltar ao Dashboard
-            </Button>
-          </div>
+          {/* Botão "Voltar ao Dashboard" removido */}
         </CardContent>
       </Card>
     </div>

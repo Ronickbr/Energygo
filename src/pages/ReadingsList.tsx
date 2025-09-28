@@ -60,12 +60,10 @@ const ReadingsList = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4 md:p-8">
+    <div className="min-h-screen bg-background text-foreground p-4 md:p-8"> {/* min-h-screen e p-4/md:p-8 removidos, agora no Layout */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Minhas Leituras</h1>
-        <Button onClick={() => navigate("/")} variant="outline">
-          Voltar ao Dashboard
-        </Button>
+        {/* Botão "Voltar ao Dashboard" removido */}
       </div>
 
       <Card className="w-full">

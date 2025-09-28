@@ -11,10 +11,11 @@ import DataEntry from "./pages/DataEntry";
 import Settings from "./pages/Settings";
 import DashboardReports from "./pages/DashboardReports";
 import ReadingsList from "./pages/ReadingsList";
-import Profile from "./pages/Profile"; // Importar a nova página de perfil
+import Profile from "./pages/Profile";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { Layout } from "@/components/Layout"; // Importar o componente Layout
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,9 @@ const App = () => (
                 path="/"
                 element={
                   <ProtectedRoute>
-                    <Index />
+                    <Layout>
+                      <Index />
+                    </Layout>
                   </ProtectedRoute>
                 }
               />
@@ -41,7 +44,9 @@ const App = () => (
                 path="/data-entry"
                 element={
                   <ProtectedRoute>
-                    <DataEntry />
+                    <Layout>
+                      <DataEntry />
+                    </Layout>
                   </ProtectedRoute>
                 }
               />
@@ -49,7 +54,9 @@ const App = () => (
                 path="/settings"
                 element={
                   <ProtectedRoute>
-                    <Settings />
+                    <Layout>
+                      <Settings />
+                    </Layout>
                   </ProtectedRoute>
                 }
               />
@@ -57,7 +64,9 @@ const App = () => (
                 path="/reports"
                 element={
                   <ProtectedRoute>
-                    <DashboardReports />
+                    <Layout>
+                      <DashboardReports />
+                    </Layout>
                   </ProtectedRoute>
                 }
               />
@@ -65,15 +74,19 @@ const App = () => (
                 path="/readings"
                 element={
                   <ProtectedRoute>
-                    <ReadingsList />
+                    <Layout>
+                      <ReadingsList />
+                    </Layout>
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="/profile" // Nova rota para o perfil
+                path="/profile"
                 element={
                   <ProtectedRoute>
-                    <Profile />
+                    <Layout>
+                      <Profile />
+                    </Layout>
                   </ProtectedRoute>
                 }
               />

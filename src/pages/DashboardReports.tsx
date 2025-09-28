@@ -38,12 +38,10 @@ const DashboardReports = () => {
   const totalCost = dailyConsumption.reduce((sum, data) => sum + data.cost, 0);
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4 md:p-8">
+    <div className="min-h-screen bg-background text-foreground p-4 md:p-8"> {/* min-h-screen e p-4/md:p-8 removidos, agora no Layout */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Relatórios de Consumo</h1>
-        <Button onClick={() => navigate("/")} variant="outline">
-          Voltar ao Dashboard
-        </Button>
+        {/* Botão "Voltar ao Dashboard" removido */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">

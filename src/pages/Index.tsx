@@ -1,15 +1,15 @@
-import { MadeWithDyad } from "@/components/made-with-dyad";
+import { MadeWithDyad } from "@/components/made-with-dyad"; // MadeWithDyad será movido para o Layout
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeToggle } from "@/components/ThemeToggle"; // ThemeToggle será movido para a Sidebar
 import { useNavigate } from "react-router-dom";
-import { Settings as SettingsIcon, BarChart3, Zap, DollarSign, Gauge, ListChecks, User } from "lucide-react"; // Importar ícone User
+import { Settings as SettingsIcon, BarChart3, Zap, DollarSign, Gauge, ListChecks, User } from "lucide-react";
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser } = useAuth(); // Logout será movido para a Sidebar
   const navigate = useNavigate();
   const { readings, dailyConsumption, settings, loading, error } = useUserReadings();
 
@@ -39,31 +39,10 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground p-4 md:p-8">
+    <div className="flex flex-col"> {/* Removido min-h-screen e p-4/md:p-8, agora no Layout */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div className="flex items-center space-x-2">
-          <ThemeToggle />
-          <Button onClick={() => navigate("/profile")} variant="outline" size="icon">
-            <User className="h-[1.2rem] w-[1.2rem]" />
-            <span className="sr-only">Perfil</span>
-          </Button>
-          <Button onClick={() => navigate("/settings")} variant="outline" size="icon">
-            <SettingsIcon className="h-[1.2rem] w-[1.2rem]" />
-            <span className="sr-only">Configurações</span>
-          </Button>
-          <Button onClick={() => navigate("/reports")} variant="outline" size="icon">
-            <BarChart3 className="h-[1.2rem] w-[1.2rem]" />
-            <span className="sr-only">Relatórios</span>
-          </Button>
-          <Button onClick={() => navigate("/readings")} variant="outline" size="icon">
-            <ListChecks className="h-[1.2rem] w-[1.2rem]" />
-            <span className="sr-only">Minhas Leituras</span>
-          </Button>
-          <Button onClick={logout} variant="outline">
-            Sair
-          </Button>
-        </div>
+        {/* Botões de navegação e ThemeToggle removidos, agora na Sidebar */}
       </div>
 
       <div className="text-center mb-8">
@@ -120,9 +99,7 @@ const Index = () => {
         </Button>
       </div>
 
-      <div className="mt-auto">
-        <MadeWithDyad />
-      </div>
+      {/* MadeWithDyad removido, agora no Layout */}
     </div>
   );
 };
