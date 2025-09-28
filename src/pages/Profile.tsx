@@ -10,14 +10,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { showSuccess, showError } from "@/utils/toast";
 import { updatePassword } from "firebase/auth";
 import { Separator } from "@/components/ui/separator";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { AuthLayout } from "@/components/AuthLayout";
+import { UserProfileCard } from "@/components/UserProfileCard"; // Importar UserProfileCard
 
 const Profile = () => {
-  const { currentUser, loading: loadingAuth } = useAuth(); // Usar loadingAuth do AuthContext
+  const { currentUser, loading: loadingAuth } = useAuth();
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loadingSubmit, setLoadingSubmit] = useState(false); // Estado de carregamento para o formulário de senha
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +58,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex items-center justify-center h-full">
+    <AuthLayout>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Meu Perfil</CardTitle>
@@ -64,53 +66,42 @@ const Profile = () => {
             Visualize suas informações e gerencie sua conta.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="space-y-6">
+          <UserProfileCard user={currentUser} />
+
+          <Separator />
+
+          <h3 className="text-lg font-semibold">Atualizar Senha</h3>
+          <form onSubmit={handlePasswordUpdate} className="space-y-4">
             <div>
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="newPassword">Nova Senha</Label>
               <Input
-                id="email"
-                type="email"
-                value={currentUser?.email || ""}
-                disabled
-                className="bg-muted cursor-not-allowed"
+                id="newPassword"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                minLength={6}
               />
             </div>
-
-            <Separator />
-
-            <h3 className="text-lg font-semibold">Atualizar Senha</h3>
-            <form onSubmit={handlePasswordUpdate} className="space-y-4">
-              <div>
-                <Label htmlFor="newPassword">Nova Senha</Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
-              <div>
-                <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={loadingSubmit}>
-                {loadingSubmit ? "Atualizando..." : "Atualizar Senha"}
-              </Button>
-            </form>
-          </div>
+            <div>
+              <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={loadingSubmit}>
+              {loadingSubmit ? "Atualizando..." : "Atualizar Senha"}
+            </Button>
+          </form>
         </CardContent>
       </Card>
-    </div>
+    </AuthLayout>
   );
 };
 
