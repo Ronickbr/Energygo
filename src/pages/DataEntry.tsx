@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,10 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"; // Importar FormDescription
 import { showSuccess, showError } from "@/utils/toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useUserReadings } from "@/hooks/useUserReadings"; // Importar useUserReadings
+import { useUserReadings } from "@/hooks/useUserReadings";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   reading: z.preprocess(
@@ -25,11 +26,12 @@ const formSchema = z.object({
       "A leitura deve ser um número válido."
     )
   ),
+  resetMeter: z.boolean().default(false).optional(),
 });
 
 const DataEntry = () => {
   const { currentUser, loading: loadingAuth } = useAuth();
-  const { readings, loading: loadingReadings } = useUserReadings(); // Obter leituras e estado de carregamento
+  const { readings, loading: loadingReadings } = useUserReadings();
   const navigate = useNavigate();
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
@@ -37,8 +39,18 @@ const DataEntry = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       reading: 0,
+      resetMeter: false,
     },
   });
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "resetMeter" && value.resetMeter) {
+        form.setValue("reading", 0);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!currentUser) {
@@ -55,7 +67,10 @@ const DataEntry = () => {
         userId: currentUser.uid,
       });
       showSuccess("Leitura registrada com sucesso!");
-      form.reset();
+      form.reset({
+        reading: 0,
+        resetMeter: false,
+      });
     } catch (error: any) {
       showError(`Falha ao registrar leitura: ${error.message}`);
       console.error("Data entry error:", error);
@@ -64,7 +79,7 @@ const DataEntry = () => {
     }
   };
 
-  if (loadingAuth || loadingReadings) { // Considerar o carregamento das leituras também
+  if (loadingAuth || loadingReadings) {
     return <LoadingSpinner message="Carregando dados do usuário..." />;
   }
 
@@ -94,7 +109,7 @@ const DataEntry = () => {
                         id="reading"
                         type="number"
                         step="0.01"
-                        placeholder={`Última leitura: ${latestReadingValue} kWh`} // Usar a última leitura como placeholder
+                        placeholder={`Última leitura: ${latestReadingValue} kWh`}
                         {...field}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
@@ -103,6 +118,30 @@ const DataEntry = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="resetMeter"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        Marcar se houve troca de relógio (zera o contador)
+                      </FormLabel>
+                      <FormDescription>
+                        Se o medidor foi trocado, a leitura atual deve começar de 0.
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
               <Button type="submit" className="w-full" disabled={loadingSubmit}>
                 {loadingSubmit ? "Registrando..." : "Registrar Leitura"}
               </Button>
