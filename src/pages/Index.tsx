@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Zap, DollarSign, Gauge } from "lucide-react";
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
+import LoadingSpinner from "@/components/LoadingSpinner";
+import RecentReadingsCard from "@/components/RecentReadingsCard"; // Importar o novo componente
 
 const Index = () => {
   const { currentUser, userSettings } = useAuth();
@@ -83,6 +84,7 @@ const Index = () => {
             </p>
           </CardContent>
         </Card>
+        <RecentReadingsCard /> {/* Adicionar o novo componente aqui */}
       </div>
 
       <div className="text-center mt-auto mb-8">
