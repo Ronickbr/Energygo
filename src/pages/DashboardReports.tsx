@@ -37,7 +37,7 @@ const DashboardReports = () => {
   return (
     <div className="flex flex-col">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Relatórios de Consumo</h1>
+        {/* Removido o h1 "Relatórios de Consumo" pois já está na topbar */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">

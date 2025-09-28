@@ -36,9 +36,7 @@ const Index = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-      </div>
+      {/* Removido o h1 "Dashboard" pois já está na topbar */}
 
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold mb-2">Bem-vindo, {currentUser?.email}!</h2>
