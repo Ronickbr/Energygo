@@ -10,6 +10,7 @@ export interface Reading {
   id: string;
   value: number;
   timestamp: Date;
+  observations?: string; // Adicionar campo de observações
 }
 
 export interface ConsumptionData {
@@ -46,6 +47,7 @@ export const useUserReadings = () => {
           id: doc.id,
           value: data.value,
           timestamp: data.timestamp.toDate(), // Convert Firebase Timestamp to Date
+          observations: data.observations || "", // Incluir observações
         };
       });
       setReadings(fetchedReadings);
@@ -163,7 +165,7 @@ export const useUserReadings = () => {
     const indexBefore30Days = allReadings.findIndex(r => r.id === firstReadingIn30Days.id) - 1;
 
     if (indexBefore30Days >= 0) {
-      relevantReadings = [allReadings[indexBefore30Days], ...readingsInLast30Days];
+      relevantReadings = [allReadings[indexBefore30Days], ...readingsInLast30Days]; // Corrigido o nome da variável aqui
     }
 
     const dailyDataFor30Days = calculateConsumptionAndCost(relevantReadings, currentTariff, "daily");

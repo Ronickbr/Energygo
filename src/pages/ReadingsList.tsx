@@ -26,7 +26,7 @@ import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 
-type SortColumn = "timestamp" | "value" | "consumption"; // Adicionado 'consumption'
+type SortColumn = "timestamp" | "value" | "consumption";
 type SortDirection = "asc" | "desc";
 
 // Estender a interface Reading para incluir o consumo calculado temporariamente
@@ -220,6 +220,7 @@ const ReadingsList = () => {
                         <ArrowUpDown className={cn("ml-2 h-4 w-4", sortColumn === "consumption" ? "opacity-100" : "opacity-40")} />
                       </Button>
                     </TableHead>
+                    <TableHead>Observações</TableHead> {/* Nova coluna para Observações */}
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -230,6 +231,9 @@ const ReadingsList = () => {
                       <TableCell>{reading.value.toFixed(2)}</TableCell>
                       <TableCell>
                         {reading.calculatedConsumption > 0 ? reading.calculatedConsumption.toFixed(2) : "N/A"}
+                      </TableCell>
+                      <TableCell className="max-w-[200px] truncate"> {/* Adicionar célula para observações */}
+                        {reading.observations || "-"}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button
