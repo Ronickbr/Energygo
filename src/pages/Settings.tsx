@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { showSuccess, showError } from "@/utils/toast";
 import { Separator } from "@/components/ui/separator";
 import { regionalTariffs, getRegionFromCep, TariffRegion } from "@/utils/tariffData";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const formSchema = z.object({
   cep: z.string().regex(/^\d{5}-?\d{3}$/, "CEP inválido. Use o formato XXXXX-XXX ou XXXXXXXX.").optional().or(z.literal("")),
@@ -32,7 +32,7 @@ const formSchema = z.object({
 const Settings = () => {
   const { currentUser, userSettings, loadingSettings, refetchUserSettings } = useAuth();
   const navigate = useNavigate();
-  const [loadingSubmit, setLoadingSubmit] = useState(false); // Renomeado para evitar conflito com loadingSettings
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [detectedRegion, setDetectedRegion] = useState<TariffRegion | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,19 +42,6 @@ const Settings = () => {
       manualTariff: userSettings?.manualTariff || 0,
     },
   });
-
-  // Reset form values when userSettings are loaded or change
-  useEffect(() => {
-    if (userSettings && !loadingSettings) {
-      form.reset({
-        cep: userSettings.cep || "",
-        manualTariff: userSettings.manualTariff || 0,
-      });
-      if (userSettings.cep) {
-        fetchAndSetRegion(userSettings.cep);
-      }
-    }
-  }, [userSettings, loadingSettings, form]);
 
   const fetchAndSetRegion = useCallback(async (cepValue: string) => {
     if (cepValue && cepValue.match(/^\d{5}-?\d{3}$/)) {
@@ -76,6 +63,19 @@ const Settings = () => {
       setDetectedRegion(null);
     }
   }, [form]);
+
+  // Reset form values when userSettings are loaded or change
+  useEffect(() => {
+    if (userSettings && !loadingSettings) {
+      form.reset({
+        cep: userSettings.cep || "",
+        manualTariff: userSettings.manualTariff || 0,
+      });
+      if (userSettings.cep) {
+        fetchAndSetRegion(userSettings.cep);
+      }
+    }
+  }, [userSettings, loadingSettings, form, fetchAndSetRegion]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!currentUser) {
@@ -171,7 +171,7 @@ const Settings = () => {
                         step="0.001"
                         placeholder="Ex: 0.75"
                         {...field}
-                        onChange={(e) => field.onChange(e.target.value)}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} // Garante que o valor seja um número
                       />
                     </FormControl>
                     <FormMessage />

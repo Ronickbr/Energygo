@@ -22,23 +22,17 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale"; // Importar locale para português
+import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { DateRange as RDPDateRange } from "react-day-picker"; // Importar DateRange do react-day-picker
-
-// Definir o tipo de DateRange que o componente Calendar espera para 'selected'
-interface CalendarSelectedDateRange {
-  from: Date;
-  to?: Date;
-}
+import { DateRange } from "react-day-picker"; // Usar DateRange diretamente
 
 const ReadingsList = () => {
   const { readings, loading, error, deleteReading } = useUserReadings();
   const navigate = useNavigate();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [readingToDelete, setReadingToDelete] = useState<string | null>(null);
-  // Usar o novo tipo para o estado dateRange
-  const [dateRange, setDateRange] = useState<CalendarSelectedDateRange | undefined>(undefined);
+  // Usar o tipo DateRange diretamente
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   const handleDeleteClick = (readingId: string) => {
     setReadingToDelete(readingId);
@@ -120,20 +114,9 @@ const ReadingsList = () => {
                 mode="range"
                 defaultMonth={dateRange?.from}
                 selected={dateRange}
-                onSelect={(selectedRange: RDPDateRange | undefined) => {
-                  // Garante que 'from' esteja presente se um intervalo for selecionado
-                  if (selectedRange && selectedRange.from) {
-                    setDateRange({
-                      from: selectedRange.from,
-                      to: selectedRange.to,
-                    });
-                  } else {
-                    // Se selectedRange for undefined ou 'from' estiver faltando, limpa o intervalo
-                    setDateRange(undefined);
-                  }
-                }}
+                onSelect={setDateRange} // Simplificado para usar setDateRange diretamente
                 numberOfMonths={2}
-                locale={ptBR} // Definir locale para português
+                locale={ptBR}
               />
             </PopoverContent>
           </Popover>
