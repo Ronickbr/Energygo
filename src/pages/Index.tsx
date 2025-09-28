@@ -2,9 +2,11 @@ import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useNavigate } from "react-router-dom"; // Importar useNavigate
 
 const Index = () => {
   const { currentUser, logout } = useAuth();
+  const navigate = useNavigate(); // Inicializar useNavigate
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4">
@@ -22,6 +24,12 @@ const Index = () => {
         <p className="mt-4 text-lg">
           Próximos passos: Adicionar formulário de leitura, relatórios e configurações.
         </p>
+        <div className="mt-8">
+          <Button onClick={() => navigate("/data-entry")} className="mr-4">
+            Registrar Nova Leitura
+          </Button>
+          {/* Futuros botões para relatórios, configurações, etc. */}
+        </div>
       </div>
       <div className="mt-auto">
         <MadeWithDyad />
