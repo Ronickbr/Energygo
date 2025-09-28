@@ -6,7 +6,7 @@ import { useUserReadings, Reading } from "@/hooks/useUserReadings";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trash2, CalendarIcon, ArrowUpDown } from "lucide-react"; // Importar ArrowUpDown
+import { Trash2, CalendarIcon, ArrowUpDown } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +21,7 @@ import {
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, startOfDay, endOfDay, isBefore, isAfter } from "date-fns"; // Importar funções do date-fns
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
@@ -65,12 +65,13 @@ const ReadingsList = () => {
       if (!dateRange?.from && !dateRange?.to) {
         return true;
       }
-      const readingDate = new Date(reading.timestamp.setHours(0, 0, 0, 0));
       
-      if (dateRange.from && readingDate < new Date(dateRange.from.setHours(0, 0, 0, 0))) {
+      const readingDate = reading.timestamp;
+
+      if (dateRange.from && isBefore(readingDate, startOfDay(dateRange.from))) {
         return false;
       }
-      if (dateRange.to && readingDate > new Date(dateRange.to.setHours(23, 59, 59, 999))) {
+      if (dateRange.to && isAfter(readingDate, endOfDay(dateRange.to))) {
         return false;
       }
       return true;
@@ -198,7 +199,7 @@ const ReadingsList = () => {
                 <TableBody>
                   {filteredAndSortedReadings.map((reading) => (
                     <TableRow key={reading.id}>
-                      <TableCell>{reading.timestamp.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' })} {reading.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TableCell>
+                      <TableCell>{format(reading.timestamp, "dd/MM/yyyy HH:mm", { locale: ptBR })}</TableCell>
                       <TableCell>{reading.value.toFixed(2)}</TableCell>
                       <TableCell className="text-right">
                         <Button
