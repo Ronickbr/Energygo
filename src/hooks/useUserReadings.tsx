@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { collection, query, orderBy, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, query, orderBy, getDocs, doc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/context/AuthContext";
-import { showWarning, showError } from "@/utils/toast";
+import { showWarning, showError, showSuccess } from "@/utils/toast";
 
 export interface Reading {
   id: string;
@@ -80,6 +80,22 @@ export const useUserReadings = () => {
     }
   }, [currentUser]);
 
+  const deleteReading = useCallback(async (readingId: string) => {
+    if (!currentUser) {
+      showError("Você precisa estar logado para deletar leituras.");
+      return;
+    }
+    try {
+      const readingDocRef = doc(db, `users/${currentUser.uid}/readings`, readingId);
+      await deleteDoc(readingDocRef);
+      showSuccess("Leitura deletada com sucesso!");
+      await fetchReadingsAndSettings(); // Refetch data after deletion
+    } catch (err: any) {
+      showError(`Falha ao deletar leitura: ${err.message}`);
+      console.error("Error deleting reading:", err);
+    }
+  }, [currentUser, fetchReadingsAndSettings]);
+
   useEffect(() => {
     fetchReadingsAndSettings();
   }, [fetchReadingsAndSettings]);
@@ -153,5 +169,6 @@ export const useUserReadings = () => {
     loading,
     error,
     refetch: fetchReadingsAndSettings,
+    deleteReading, // Expose delete function
   };
 };

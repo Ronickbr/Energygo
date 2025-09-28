@@ -9,7 +9,8 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import DataEntry from "./pages/DataEntry";
 import Settings from "./pages/Settings";
-import DashboardReports from "./pages/DashboardReports"; // Importar a nova página de relatórios
+import DashboardReports from "./pages/DashboardReports";
+import ReadingsList from "./pages/ReadingsList"; // Importar a nova página de listagem de leituras
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
@@ -52,10 +53,18 @@ const App = () => (
                 }
               />
               <Route
-                path="/reports" // Nova rota para relatórios
+                path="/reports"
                 element={
                   <ProtectedRoute>
                     <DashboardReports />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/readings" // Nova rota para listagem de leituras
+                element={
+                  <ProtectedRoute>
+                    <ReadingsList />
                   </ProtectedRoute>
                 }
               />

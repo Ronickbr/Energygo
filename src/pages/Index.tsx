@@ -3,8 +3,8 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useNavigate } from "react-router-dom";
-import { Settings as SettingsIcon, BarChart3, Zap, DollarSign, Gauge } from "lucide-react";
-import { useUserReadings } from "@/hooks/useUserReadings"; // Importar o hook de leituras
+import { Settings as SettingsIcon, BarChart3, Zap, DollarSign, Gauge, ListChecks } from "lucide-react"; // Importar ícone ListChecks
+import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
@@ -51,6 +51,10 @@ const Index = () => {
           <Button onClick={() => navigate("/reports")} variant="outline" size="icon">
             <BarChart3 className="h-[1.2rem] w-[1.2rem]" />
             <span className="sr-only">Relatórios</span>
+          </Button>
+          <Button onClick={() => navigate("/readings")} variant="outline" size="icon">
+            <ListChecks className="h-[1.2rem] w-[1.2rem]" />
+            <span className="sr-only">Minhas Leituras</span>
           </Button>
           <Button onClick={logout} variant="outline">
             Sair
