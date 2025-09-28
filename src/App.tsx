@@ -15,7 +15,7 @@ import Profile from "./pages/Profile";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
-import { Layout } from "@/components/Layout"; // Importar o componente Layout
+import { Layout } from "@/components/Layout";
 
 const queryClient = new QueryClient();
 
@@ -91,7 +91,7 @@ const App = () => (
                 }
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
+              <Route path="*" element={<Layout><NotFound /></Layout>} /> {/* NotFound agora usa o Layout */}
             </Routes>
           </AuthProvider>
         </BrowserRouter>
