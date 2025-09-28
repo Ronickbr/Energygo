@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useNavigate } from "react-router-dom";
-import { Settings as SettingsIcon, BarChart3, Zap, DollarSign, Gauge, ListChecks } from "lucide-react"; // Importar ícone ListChecks
+import { Settings as SettingsIcon, BarChart3, Zap, DollarSign, Gauge, ListChecks, User } from "lucide-react"; // Importar ícone User
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
@@ -44,6 +44,10 @@ const Index = () => {
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <div className="flex items-center space-x-2">
           <ThemeToggle />
+          <Button onClick={() => navigate("/profile")} variant="outline" size="icon">
+            <User className="h-[1.2rem] w-[1.2rem]" />
+            <span className="sr-only">Perfil</span>
+          </Button>
           <Button onClick={() => navigate("/settings")} variant="outline" size="icon">
             <SettingsIcon className="h-[1.2rem] w-[1.2rem]" />
             <span className="sr-only">Configurações</span>

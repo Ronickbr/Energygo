@@ -10,7 +10,8 @@ import SignUp from "./pages/SignUp";
 import DataEntry from "./pages/DataEntry";
 import Settings from "./pages/Settings";
 import DashboardReports from "./pages/DashboardReports";
-import ReadingsList from "./pages/ReadingsList"; // Importar a nova página de listagem de leituras
+import ReadingsList from "./pages/ReadingsList";
+import Profile from "./pages/Profile"; // Importar a nova página de perfil
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
@@ -61,10 +62,18 @@ const App = () => (
                 }
               />
               <Route
-                path="/readings" // Nova rota para listagem de leituras
+                path="/readings"
                 element={
                   <ProtectedRoute>
                     <ReadingsList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile" // Nova rota para o perfil
+                element={
+                  <ProtectedRoute>
+                    <Profile />
                   </ProtectedRoute>
                 }
               />
