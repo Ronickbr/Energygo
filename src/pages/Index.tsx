@@ -1,7 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Zap, DollarSign, Gauge } from "lucide-react";
+import { Zap, DollarSign, Gauge, ListChecks } from "lucide-react"; // Importar ListChecks para o novo card
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -111,7 +111,21 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        {/* New cards for Last Interval Summary */}
+        {/* New card for Total Readings */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Leituras</CardTitle>
+            <ListChecks className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{readings.length}</div>
+            <p className="text-xs text-muted-foreground">
+              Leituras registradas no total
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Existing cards for Last Interval Summary */}
         <LastIntervalConsumptionCard
           consumption={lastIntervalSummary.consumption}
           startDate={lastIntervalSummary.startDate}
