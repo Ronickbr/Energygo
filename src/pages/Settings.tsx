@@ -106,7 +106,7 @@ const Settings = () => {
   }
 
   return (
-    <div className="flex items-center justify-center"> {/* Removido h-full */}
+    <div className="flex items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Configurações de Energia</CardTitle>

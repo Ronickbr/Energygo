@@ -92,7 +92,7 @@ export const useUserReadings = () => {
   const calculateConsumptionAndCost = (
     readings: Reading[],
     tariff: number,
-    period: "daily" | "weekly" | "monthly"
+    period: "daily" | "monthly"
   ): ConsumptionData[] => {
     if (readings.length < 2 || tariff === 0) {
       return [];
@@ -117,11 +117,6 @@ export const useUserReadings = () => {
 
       if (period === "daily") {
         key = date.toISOString().split("T")[0]; // YYYY-MM-DD
-      } else if (period === "weekly") {
-        const day = date.getDay();
-        const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-        const monday = new Date(date.setDate(diff));
-        key = monday.toISOString().split("T")[0];
       } else { // monthly
         key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`; // YYYY-MM
       }
@@ -144,7 +139,6 @@ export const useUserReadings = () => {
 
   const tariff = userSettings?.manualTariff || 0;
   const dailyConsumption = calculateConsumptionAndCost(readings, tariff, "daily");
-  const weeklyConsumption = calculateConsumptionAndCost(readings, tariff, "weekly");
   const monthlyConsumption = calculateConsumptionAndCost(readings, tariff, "monthly");
 
   // Calculate consumption and cost for the last 30 days
@@ -172,7 +166,7 @@ export const useUserReadings = () => {
     const indexBefore30Days = allReadings.findIndex(r => r.id === firstReadingIn30Days.id) - 1;
 
     if (indexBefore30Days >= 0) {
-      relevantReadings = [allReadings[indexBefore30Days], ...readingsInLast30Days]; // Corrigido o nome da variável aqui
+      relevantReadings = [allReadings[indexBefore30Days], ...readingsInLast30Days];
     }
 
     const dailyDataFor30Days = calculateConsumptionAndCost(relevantReadings, currentTariff, "daily");
@@ -217,7 +211,6 @@ export const useUserReadings = () => {
     readings,
     userSettings, // Now from AuthContext
     dailyConsumption,
-    weeklyConsumption,
     monthlyConsumption,
     last30DaysSummary, // New summary for last 30 days
     lastIntervalSummary, // New summary for the last interval

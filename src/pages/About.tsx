@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 
 const About = () => {
   return (
-    <div className="flex items-center justify-center"> {/* Removido h-full */}
+    <div className="flex items-center justify-center">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl">Sobre o Energo</CardTitle>
