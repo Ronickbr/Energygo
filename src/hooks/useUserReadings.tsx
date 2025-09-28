@@ -19,6 +19,13 @@ export interface ConsumptionData {
   cost: number;
 }
 
+export interface LastIntervalSummary {
+  consumption: number;
+  cost: number;
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
 export const useUserReadings = () => {
   const { currentUser, userSettings, loading: loadingAuth, loadingSettings } = useAuth();
   const [readings, setReadings] = useState<Reading[]>([]);
@@ -181,6 +188,31 @@ export const useUserReadings = () => {
 
   const last30DaysSummary = calculateLast30DaysSummary(readings, tariff);
 
+  // NEW: Calculate consumption and cost for the last interval
+  const calculateLastIntervalSummary = useCallback((allReadings: Reading[], currentTariff: number): LastIntervalSummary => {
+    if (allReadings.length < 2 || currentTariff === 0) {
+      return { consumption: 0, cost: 0, startDate: null, endDate: null };
+    }
+
+    // Ensure readings are sorted by timestamp
+    const sortedReadings = [...allReadings].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
+    const lastReading = sortedReadings[sortedReadings.length - 1];
+    const secondLastReading = sortedReadings[sortedReadings.length - 2];
+
+    const consumption = lastReading.value - secondLastReading.value;
+    const cost = consumption * currentTariff;
+
+    return {
+      consumption: parseFloat(consumption.toFixed(2)),
+      cost: parseFloat(cost.toFixed(2)),
+      startDate: secondLastReading.timestamp,
+      endDate: lastReading.timestamp,
+    };
+  }, []);
+
+  const lastIntervalSummary = calculateLastIntervalSummary(readings, tariff);
+
   return {
     readings,
     userSettings, // Now from AuthContext
@@ -188,6 +220,7 @@ export const useUserReadings = () => {
     weeklyConsumption,
     monthlyConsumption,
     last30DaysSummary, // New summary for last 30 days
+    lastIntervalSummary, // New summary for the last interval
     loading,
     error,
     refetchReadings: fetchReadings, // Renamed to be specific

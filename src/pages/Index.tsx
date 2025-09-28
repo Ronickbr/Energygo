@@ -1,16 +1,18 @@
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Zap, DollarSign, Gauge, Clock } from "lucide-react"; // Importar Clock para o novo card
+import { Zap, DollarSign, Gauge } from "lucide-react";
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import RecentReadingsCard from "@/components/RecentReadingsCard";
+import LastIntervalConsumptionCard from "@/components/LastIntervalConsumptionCard";
+import LastIntervalCostCard from "@/components/LastIntervalCostCard";
 
 const Index = () => {
   const { currentUser, userSettings } = useAuth();
   const navigate = useNavigate();
-  const { readings, dailyConsumption, last30DaysSummary, loading, error } = useUserReadings();
+  const { readings, dailyConsumption, last30DaysSummary, lastIntervalSummary, loading, error } = useUserReadings();
 
   if (loading) {
     return <LoadingSpinner message="Carregando dashboard..." />;
@@ -18,7 +20,7 @@ const Index = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center p-4 text-center"> {/* Removido h-full */}
+      <div className="flex flex-col items-center justify-center p-4 text-center">
         <h2 className="text-2xl font-bold text-destructive">Erro ao carregar dados</h2>
         <p className="text-muted-foreground mt-2">{error}</p>
         <Button onClick={() => navigate("/")} className="mt-4">
@@ -33,7 +35,7 @@ const Index = () => {
   const totalCostSinceFirstReading = dailyConsumption.reduce((sum, data) => sum + data.cost, 0);
 
   return (
-    <div className="flex flex-col"> {/* Removido h-full */}
+    <div className="flex flex-col">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
       </div>
@@ -108,6 +110,19 @@ const Index = () => {
             </p>
           </CardContent>
         </Card>
+
+        {/* New cards for Last Interval Summary */}
+        <LastIntervalConsumptionCard
+          consumption={lastIntervalSummary.consumption}
+          startDate={lastIntervalSummary.startDate}
+          endDate={lastIntervalSummary.endDate}
+        />
+        <LastIntervalCostCard
+          cost={lastIntervalSummary.cost}
+          tariff={userSettings?.manualTariff || 0}
+          startDate={lastIntervalSummary.startDate}
+          endDate={lastIntervalSummary.endDate}
+        />
         <RecentReadingsCard />
       </div>
 
