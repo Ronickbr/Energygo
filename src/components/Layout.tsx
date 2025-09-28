@@ -2,8 +2,8 @@
 
 import React, { ReactNode } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Footer } from "@/components/Footer"; // Importar o novo Footer
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,7 +19,7 @@ export const Layout = ({ children }: LayoutProps) => {
         <div className="flex-1 p-4 md:p-8">
           {children}
         </div>
-        <MadeWithDyad />
+        <Footer /> {/* Usar o novo componente Footer */}
       </main>
     </div>
   );
