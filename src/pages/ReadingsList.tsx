@@ -21,13 +21,18 @@ import {
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format, startOfDay, endOfDay, isBefore, isAfter } from "date-fns"; // Importar funções do date-fns
+import { format, startOfDay, endOfDay, isBefore, isAfter } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 
-type SortColumn = "timestamp" | "value";
+type SortColumn = "timestamp" | "value" | "consumption"; // Adicionado 'consumption'
 type SortDirection = "asc" | "desc";
+
+// Estender a interface Reading para incluir o consumo calculado temporariamente
+interface ReadingWithConsumption extends Reading {
+  calculatedConsumption: number;
+}
 
 const ReadingsList = () => {
   const { readings, loading, error, deleteReading } = useUserReadings();
@@ -60,7 +65,17 @@ const ReadingsList = () => {
     }
   };
 
-  const filteredAndSortedReadings = [...readings]
+  // Primeiro, calcular o consumo para cada leitura com base na ordem cronológica
+  const readingsWithConsumption: ReadingWithConsumption[] = readings.map((currentReading, index) => {
+    const previousReading = index > 0 ? readings[index - 1] : null;
+    const consumption = previousReading ? currentReading.value - previousReading.value : 0;
+    return {
+      ...currentReading,
+      calculatedConsumption: consumption > 0 ? consumption : 0, // Garante consumo não negativo
+    };
+  });
+
+  const filteredAndSortedReadings = [...readingsWithConsumption]
     .filter((reading) => {
       if (!dateRange?.from && !dateRange?.to) {
         return true;
@@ -82,6 +97,8 @@ const ReadingsList = () => {
         compareValue = a.timestamp.getTime() - b.timestamp.getTime();
       } else if (sortColumn === "value") {
         compareValue = a.value - b.value;
+      } else if (sortColumn === "consumption") { // Nova lógica de ordenação para consumo
+        compareValue = a.calculatedConsumption - b.calculatedConsumption;
       }
 
       return sortDirection === "asc" ? compareValue : -compareValue;
@@ -93,7 +110,7 @@ const ReadingsList = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center p-4 text-center"> {/* Removido h-full */}
+      <div className="flex flex-col items-center justify-center p-4 text-center">
         <h2 className="text-2xl font-bold text-destructive">Erro ao carregar dados</h2>
         <p className="text-muted-foreground mt-2">{error}</p>
         <Button onClick={() => navigate("/")} className="mt-4">
@@ -104,7 +121,7 @@ const ReadingsList = () => {
   }
 
   return (
-    <div className="flex flex-col"> {/* Removido h-full */}
+    <div className="flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
         <h1 className="text-3xl font-bold">Minhas Leituras</h1>
         <div className="flex items-center space-x-2">
@@ -193,6 +210,16 @@ const ReadingsList = () => {
                         <ArrowUpDown className={cn("ml-2 h-4 w-4", sortColumn === "value" ? "opacity-100" : "opacity-40")} />
                       </Button>
                     </TableHead>
+                    <TableHead> {/* Nova coluna para Consumo */}
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSort("consumption")}
+                        className="px-0 hover:bg-transparent"
+                      >
+                        Consumo (kWh)
+                        <ArrowUpDown className={cn("ml-2 h-4 w-4", sortColumn === "consumption" ? "opacity-100" : "opacity-40")} />
+                      </Button>
+                    </TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -201,6 +228,9 @@ const ReadingsList = () => {
                     <TableRow key={reading.id}>
                       <TableCell>{format(reading.timestamp, "dd/MM/yyyy HH:mm", { locale: ptBR })}</TableCell>
                       <TableCell>{reading.value.toFixed(2)}</TableCell>
+                      <TableCell>
+                        {reading.calculatedConsumption > 0 ? reading.calculatedConsumption.toFixed(2) : "N/A"}
+                      </TableCell>
                       <TableCell className="text-right">
                         <Button
                           variant="destructive"
