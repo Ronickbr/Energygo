@@ -18,46 +18,24 @@ export interface ConsumptionData {
   cost: number;
 }
 
-export interface UserSettings {
-  cep?: string;
-  manualTariff: number;
-}
-
 export const useUserReadings = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, userSettings, loading: loadingAuth, loadingSettings } = useAuth();
   const [readings, setReadings] = useState<Reading[]>([]);
-  const [settings, setSettings] = useState<UserSettings | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingReadings, setLoadingReadings] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchReadingsAndSettings = useCallback(async () => {
+  const loading = loadingAuth || loadingSettings || loadingReadings;
+
+  const fetchReadings = useCallback(async () => {
     if (!currentUser) {
-      setLoading(false);
+      setLoadingReadings(false);
       return;
     }
 
-    setLoading(true);
+    setLoadingReadings(true);
     setError(null);
 
     try {
-      // Fetch user settings
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      let userSettings: UserSettings = { manualTariff: 0 };
-      if (userDocSnap.exists()) {
-        const data = userDocSnap.data();
-        userSettings = {
-          cep: data.cep || "",
-          manualTariff: data.manualTariff || 0,
-        };
-      }
-      setSettings(userSettings);
-
-      if (userSettings.manualTariff === 0) {
-        showWarning("Por favor, configure sua tarifa de energia nas configurações para ver os custos.");
-      }
-
-      // Fetch readings
       const readingsCollectionRef = collection(db, `users/${currentUser.uid}/readings`);
       const q = query(readingsCollectionRef, orderBy("timestamp", "asc"));
       const querySnapshot = await getDocs(q);
@@ -72,11 +50,11 @@ export const useUserReadings = () => {
       });
       setReadings(fetchedReadings);
     } catch (err: any) {
-      console.error("Error fetching data:", err);
+      console.error("Error fetching readings:", err);
       showError("Falha ao carregar dados de consumo.");
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoadingReadings(false);
     }
   }, [currentUser]);
 
@@ -89,16 +67,18 @@ export const useUserReadings = () => {
       const readingDocRef = doc(db, `users/${currentUser.uid}/readings`, readingId);
       await deleteDoc(readingDocRef);
       showSuccess("Leitura deletada com sucesso!");
-      await fetchReadingsAndSettings(); // Refetch data after deletion
+      await fetchReadings(); // Refetch data after deletion
     } catch (err: any) {
       showError(`Falha ao deletar leitura: ${err.message}`);
       console.error("Error deleting reading:", err);
     }
-  }, [currentUser, fetchReadingsAndSettings]);
+  }, [currentUser, fetchReadings]);
 
   useEffect(() => {
-    fetchReadingsAndSettings();
-  }, [fetchReadingsAndSettings]);
+    if (currentUser && !loadingAuth) {
+      fetchReadings();
+    }
+  }, [currentUser, loadingAuth, fetchReadings]);
 
   const calculateConsumptionAndCost = (
     readings: Reading[],
@@ -118,8 +98,6 @@ export const useUserReadings = () => {
       const consumption = currentReading.value - prevReading.value;
 
       if (consumption < 0) {
-        // Handle cases where reading might have been reset or entered incorrectly
-        // For simplicity, we'll skip negative consumption, but a real app might flag this
         continue;
       }
 
@@ -131,9 +109,8 @@ export const useUserReadings = () => {
       if (period === "daily") {
         key = date.toISOString().split("T")[0]; // YYYY-MM-DD
       } else if (period === "weekly") {
-        // Simple week calculation: Monday of the week
         const day = date.getDay();
-        const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is sunday
+        const diff = date.getDate() - day + (day === 0 ? -6 : 1);
         const monday = new Date(date.setDate(diff));
         key = monday.toISOString().split("T")[0];
       } else { // monthly
@@ -156,19 +133,20 @@ export const useUserReadings = () => {
       .sort((a, b) => a.date.localeCompare(b.date));
   };
 
-  const dailyConsumption = calculateConsumptionAndCost(readings, settings?.manualTariff || 0, "daily");
-  const weeklyConsumption = calculateConsumptionAndCost(readings, settings?.manualTariff || 0, "weekly");
-  const monthlyConsumption = calculateConsumptionAndCost(readings, settings?.manualTariff || 0, "monthly");
+  const tariff = userSettings?.manualTariff || 0;
+  const dailyConsumption = calculateConsumptionAndCost(readings, tariff, "daily");
+  const weeklyConsumption = calculateConsumptionAndCost(readings, tariff, "weekly");
+  const monthlyConsumption = calculateConsumptionAndCost(readings, tariff, "monthly");
 
   return {
     readings,
-    settings,
+    userSettings, // Now from AuthContext
     dailyConsumption,
     weeklyConsumption,
     monthlyConsumption,
     loading,
     error,
-    refetch: fetchReadingsAndSettings,
-    deleteReading, // Expose delete function
+    refetchReadings: fetchReadings, // Renamed to be specific
+    deleteReading,
   };
 };

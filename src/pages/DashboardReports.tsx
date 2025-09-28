@@ -8,10 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ConsumptionChart from "@/components/ConsumptionChart";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext"; // Import useAuth
 
 const DashboardReports = () => {
-  const { dailyConsumption, monthlyConsumption, loading, error, settings } = useUserReadings();
+  const { userSettings, loading: loadingAuth, loadingSettings } = useAuth(); // Get userSettings from AuthContext
+  const { dailyConsumption, monthlyConsumption, loading: loadingReadings, error } = useUserReadings();
   const navigate = useNavigate();
+
+  const loading = loadingAuth || loadingSettings || loadingReadings;
 
   if (loading) {
     return (
@@ -66,7 +70,7 @@ const DashboardReports = () => {
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">
-              {settings?.manualTariff ? settings.manualTariff.toFixed(3) : "Não Definida"}
+              {userSettings?.manualTariff ? userSettings.manualTariff.toFixed(3) : "Não Definida"}
             </p>
           </CardContent>
         </Card>

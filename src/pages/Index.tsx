@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, userSettings, loading: loadingAuth, loadingSettings } = useAuth();
   const navigate = useNavigate();
-  const { readings, dailyConsumption, settings, loading, error } = useUserReadings();
+  const { readings, dailyConsumption, loading: loadingReadings, error } = useUserReadings();
+
+  const loading = loadingAuth || loadingSettings || loadingReadings;
 
   const latestReading = readings.length > 0 ? readings[readings.length - 1] : null;
   const totalConsumption = dailyConsumption.reduce((sum, data) => sum + data.consumption, 0);
@@ -84,7 +86,7 @@ const Index = () => {
           <CardContent>
             <div className="text-2xl font-bold">R$ {totalCost.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">
-              Com tarifa de {settings?.manualTariff ? settings.manualTariff.toFixed(3) : "N/A"} R$/kWh
+              Com tarifa de {userSettings?.manualTariff ? userSettings.manualTariff.toFixed(3) : "N/A"} R$/kWh
             </p>
           </CardContent>
         </Card>

@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form"; // Corrigido o caminho de importação
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { showSuccess, showError } from "@/utils/toast";
 import { Separator } from "@/components/ui/separator";
-import { regionalTariffs, getRegionFromCep, TariffRegion } from "@/utils/tariffData"; // Importar dados de tarifa
+import { regionalTariffs, getRegionFromCep, TariffRegion } from "@/utils/tariffData";
+import { Loader2 } from "lucide-react"; // Importação adicionada
 
 const formSchema = z.object({
   cep: z.string().regex(/^\d{5}-?\d{3}$/, "CEP inválido. Use o formato XXXXX-XXX ou XXXXXXXX.").optional().or(z.literal("")),
@@ -29,7 +30,7 @@ const formSchema = z.object({
 });
 
 const Settings = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, userSettings, loadingSettings, refetchUserSettings } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [detectedRegion, setDetectedRegion] = useState<TariffRegion | null>(null);
@@ -37,10 +38,23 @@ const Settings = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      cep: "",
-      manualTariff: 0,
+      cep: userSettings?.cep || "",
+      manualTariff: userSettings?.manualTariff || 0,
     },
   });
+
+  // Reset form values when userSettings are loaded or change
+  useEffect(() => {
+    if (userSettings && !loadingSettings) {
+      form.reset({
+        cep: userSettings.cep || "",
+        manualTariff: userSettings.manualTariff || 0,
+      });
+      if (userSettings.cep) {
+        fetchAndSetRegion(userSettings.cep);
+      }
+    }
+  }, [userSettings, loadingSettings, form]);
 
   const fetchAndSetRegion = useCallback(async (cepValue: string) => {
     if (cepValue && cepValue.match(/^\d{5}-?\d{3}$/)) {
@@ -63,26 +77,6 @@ const Settings = () => {
     }
   }, [form]);
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      if (currentUser) {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          form.reset({
-            cep: data.cep || "",
-            manualTariff: data.manualTariff || 0,
-          });
-          if (data.cep) {
-            fetchAndSetRegion(data.cep);
-          }
-        }
-      }
-    };
-    fetchSettings();
-  }, [currentUser, form, fetchAndSetRegion]);
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!currentUser) {
       showError("Você precisa estar logado para salvar configurações.");
@@ -98,6 +92,7 @@ const Settings = () => {
         manualTariff: values.manualTariff,
       }, { merge: true });
       showSuccess("Configurações salvas com sucesso!");
+      await refetchUserSettings(); // Refresh settings in AuthContext
     } catch (error: any) {
       showError(`Falha ao salvar configurações: ${error.message}`);
       console.error("Settings save error:", error);
@@ -105,6 +100,15 @@ const Settings = () => {
       setLoading(false);
     }
   };
+
+  if (loadingSettings) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="ml-2 text-muted-foreground">Carregando configurações...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center h-full">
