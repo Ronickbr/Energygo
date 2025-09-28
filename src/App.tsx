@@ -91,7 +91,7 @@ const App = () => (
                 }
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<Layout><NotFound /></Layout>} /> {/* NotFound agora usa o Layout */}
+              <Route path="*" element={<NotFound />} /> {/* NotFound agora é renderizado diretamente */}
             </Routes>
           </AuthProvider>
         </BrowserRouter>
