@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"; // Importar FormDescription
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { showSuccess, showError } from "@/utils/toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea"; // Importar Textarea
 
 const formSchema = z.object({
   reading: z.preprocess(
@@ -27,6 +28,7 @@ const formSchema = z.object({
     )
   ),
   resetMeter: z.boolean().default(false).optional(),
+  observations: z.string().optional(), // Novo campo para observações
 });
 
 const DataEntry = () => {
@@ -40,6 +42,7 @@ const DataEntry = () => {
     defaultValues: {
       reading: 0,
       resetMeter: false,
+      observations: "", // Valor padrão para observações
     },
   });
 
@@ -65,11 +68,13 @@ const DataEntry = () => {
         value: values.reading,
         timestamp: serverTimestamp(),
         userId: currentUser.uid,
+        observations: values.observations || "", // Salvar observações
       });
       showSuccess("Leitura registrada com sucesso!");
       form.reset({
         reading: 0,
         resetMeter: false,
+        observations: "", // Resetar observações também
       });
     } catch (error: any) {
       showError(`Falha ao registrar leitura: ${error.message}`);
@@ -138,6 +143,24 @@ const DataEntry = () => {
                         Se o medidor foi trocado, a leitura atual deve começar de 0.
                       </FormDescription>
                     </div>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="observations"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="observations">Observações (Opcional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        id="observations"
+                        placeholder="Adicione quaisquer observações sobre esta leitura..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
