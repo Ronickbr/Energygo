@@ -27,7 +27,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
           </SheetTrigger>
         )}
         <Link to="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl">Energy Tracker</span>
+          <span className="font-bold text-xl">Energo</span>
         </Link>
       </div>
       <ThemeToggle />

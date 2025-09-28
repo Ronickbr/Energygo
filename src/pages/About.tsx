@@ -9,14 +9,14 @@ const About = () => {
     <div className="flex items-center justify-center h-full">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl">Sobre o Energy Tracker</CardTitle>
+          <CardTitle className="text-3xl">Sobre o Energo</CardTitle>
           <CardDescription>
             Sua ferramenta para monitorar e gerenciar o consumo de energia.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 text-muted-foreground">
           <p>
-            O Energy Tracker é um aplicativo desenvolvido para ajudar você a acompanhar seu consumo de energia elétrica de forma simples e eficiente. Registre suas leituras do medidor, visualize gráficos de consumo diário e mensal, e estime seus custos com base em tarifas configuráveis.
+            O Energo é um aplicativo desenvolvido para ajudar você a acompanhar seu consumo de energia elétrica de forma simples e eficiente. Registre suas leituras do medidor, visualize gráficos de consumo diário e mensal, e estime seus custos com base em tarifas configuráveis.
           </p>
           <p>
             Nosso objetivo é fornecer uma visão clara do seu uso de energia, permitindo que você tome decisões mais informadas para economizar e otimizar seu consumo.

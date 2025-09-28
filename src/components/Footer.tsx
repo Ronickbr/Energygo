@@ -7,7 +7,7 @@ export const Footer = () => {
   return (
     <footer className="p-4 text-center bg-background border-t mt-auto">
       <p className="text-sm text-muted-foreground">
-        &copy; {currentYear} Energy Tracker. Todos os direitos reservados.
+        &copy; {currentYear} Energo. Todos os direitos reservados.
       </p>
       <a
         href="https://www.dyad.sh/"
