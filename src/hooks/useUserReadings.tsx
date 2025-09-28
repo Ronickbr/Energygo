@@ -138,12 +138,54 @@ export const useUserReadings = () => {
   const weeklyConsumption = calculateConsumptionAndCost(readings, tariff, "weekly");
   const monthlyConsumption = calculateConsumptionAndCost(readings, tariff, "monthly");
 
+  // Calculate consumption and cost for the last 30 days
+  const calculateLast30DaysSummary = useCallback((allReadings: Reading[], currentTariff: number) => {
+    if (allReadings.length < 2 || currentTariff === 0) {
+      return { consumption: 0, cost: 0 };
+    }
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const readingsInLast30Days = allReadings.filter(
+      (reading) => reading.timestamp >= thirtyDaysAgo
+    );
+
+    // If there are not enough readings in the last 30 days, or only one, return 0
+    if (readingsInLast30Days.length < 2) {
+      return { consumption: 0, cost: 0 };
+    }
+
+    // To calculate consumption for the last 30 days, we need the reading *before* the 30-day mark
+    // if it exists, to get the first interval correctly.
+    let relevantReadings = [...readingsInLast30Days];
+    const firstReadingIn30Days = readingsInLast30Days[0];
+    const indexBefore30Days = allReadings.findIndex(r => r.id === firstReadingIn30Days.id) - 1;
+
+    if (indexBefore30Days >= 0) {
+      relevantReadings = [allReadings[indexBefore30Days], ...readingsInLast30Days];
+    }
+
+    const dailyDataFor30Days = calculateConsumptionAndCost(relevantReadings, currentTariff, "daily");
+
+    const totalConsumption = dailyDataFor30Days.reduce((sum, data) => sum + data.consumption, 0);
+    const totalCost = dailyDataFor30Days.reduce((sum, data) => sum + data.cost, 0);
+
+    return {
+      consumption: parseFloat(totalConsumption.toFixed(2)),
+      cost: parseFloat(totalCost.toFixed(2)),
+    };
+  }, [calculateConsumptionAndCost]);
+
+  const last30DaysSummary = calculateLast30DaysSummary(readings, tariff);
+
   return {
     readings,
     userSettings, // Now from AuthContext
     dailyConsumption,
     weeklyConsumption,
     monthlyConsumption,
+    last30DaysSummary, // New summary for last 30 days
     loading,
     error,
     refetchReadings: fetchReadings, // Renamed to be specific

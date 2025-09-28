@@ -1,16 +1,16 @@
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Zap, DollarSign, Gauge } from "lucide-react";
+import { Zap, DollarSign, Gauge, Clock } from "lucide-react"; // Importar Clock para o novo card
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import RecentReadingsCard from "@/components/RecentReadingsCard"; // Importar o novo componente
+import RecentReadingsCard from "@/components/RecentReadingsCard";
 
 const Index = () => {
   const { currentUser, userSettings } = useAuth();
   const navigate = useNavigate();
-  const { readings, dailyConsumption, loading, error } = useUserReadings();
+  const { readings, dailyConsumption, last30DaysSummary, loading, error } = useUserReadings();
 
   if (loading) {
     return <LoadingSpinner message="Carregando dashboard..." />;
@@ -29,8 +29,8 @@ const Index = () => {
   }
 
   const latestReading = readings.length > 0 ? readings[readings.length - 1] : null;
-  const totalConsumption = dailyConsumption.reduce((sum, data) => sum + data.consumption, 0);
-  const totalCost = dailyConsumption.reduce((sum, data) => sum + data.cost, 0);
+  const totalConsumptionSinceFirstReading = dailyConsumption.reduce((sum, data) => sum + data.consumption, 0);
+  const totalCostSinceFirstReading = dailyConsumption.reduce((sum, data) => sum + data.cost, 0);
 
   return (
     <div className="flex flex-col h-full">
@@ -62,11 +62,35 @@ const Index = () => {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Consumo Total</CardTitle>
+            <CardTitle className="text-sm font-medium">Consumo Últimos 30 Dias</CardTitle>
             <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalConsumption.toFixed(2)} kWh</div>
+            <div className="text-2xl font-bold">{last30DaysSummary.consumption.toFixed(2)} kWh</div>
+            <p className="text-xs text-muted-foreground">
+              Com base nas leituras registradas
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Custo Últimos 30 Dias</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">R$ {last30DaysSummary.cost.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground">
+              Com tarifa de {userSettings?.manualTariff ? userSettings.manualTariff.toFixed(3) : "N/A"} R$/kWh
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Consumo Total (Desde Início)</CardTitle>
+            <Zap className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalConsumptionSinceFirstReading.toFixed(2)} kWh</div>
             <p className="text-xs text-muted-foreground">
               Desde a primeira leitura
             </p>
@@ -74,17 +98,17 @@ const Index = () => {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Custo Total</CardTitle>
+            <CardTitle className="text-sm font-medium">Custo Total (Desde Início)</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">R$ {totalCost.toFixed(2)}</div>
+            <div className="text-2xl font-bold">R$ {totalCostSinceFirstReading.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">
               Com tarifa de {userSettings?.manualTariff ? userSettings.manualTariff.toFixed(3) : "N/A"} R$/kWh
             </p>
           </CardContent>
         </Card>
-        <RecentReadingsCard /> {/* Adicionar o novo componente aqui */}
+        <RecentReadingsCard />
       </div>
 
       <div className="text-center mt-auto mb-8">
