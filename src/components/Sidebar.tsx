@@ -4,7 +4,6 @@ import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
   Home,
   Zap,
@@ -46,7 +45,7 @@ interface SidebarContentProps {
   onClose?: () => void;
 }
 
-const SidebarContent = ({ onClose }: SidebarContentProps) => {
+export const SidebarContent = ({ onClose }: SidebarContentProps) => { // Exportar SidebarContent
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,7 +69,7 @@ const SidebarContent = ({ onClose }: SidebarContentProps) => {
     <div className="flex h-full flex-col justify-between p-4">
       <div className="mb-6 flex justify-center">
         <Link to="/" onClick={onClose}>
-          <Logo className="h-12" /> {/* Adicionar a logo aqui */}
+          <Logo className="h-12" />
         </Link>
       </div>
       <div className="space-y-2 flex-1">
@@ -100,23 +99,9 @@ const SidebarContent = ({ onClose }: SidebarContentProps) => {
   );
 };
 
-interface SidebarProps {
-  isMobile: boolean;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-export const Sidebar = ({ isMobile, isOpen, onOpenChange }: SidebarProps) => {
-  if (isMobile) {
-    return (
-      <Sheet open={isOpen} onOpenChange={onOpenChange}>
-        <SheetContent side="left" className="w-64 p-0">
-          <SidebarContent onClose={() => onOpenChange(false)} />
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
+// A Sidebar agora será apenas para desktop, ou um wrapper simples para o SheetContent no mobile
+// O Sheet e SheetTrigger serão gerenciados no Layout.
+export const Sidebar = () => { // Não precisa mais de isMobile, isOpen, onOpenChange aqui
   return (
     <aside className="hidden md:flex flex-col w-64 border-r bg-sidebar-background text-sidebar-foreground h-screen sticky top-0">
       <SidebarContent />
