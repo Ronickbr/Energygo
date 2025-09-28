@@ -65,6 +65,7 @@ const RecentReadingsCard = () => {
                 <TableRow>
                   <TableHead>Data</TableHead>
                   <TableHead className="text-right">Leitura (kWh)</TableHead>
+                  <TableHead>Observações</TableHead> {/* Nova coluna para Observações */}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -72,6 +73,9 @@ const RecentReadingsCard = () => {
                   <TableRow key={reading.id}>
                     <TableCell>{reading.timestamp.toLocaleDateString()} {reading.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TableCell>
                     <TableCell className="text-right">{reading.value.toFixed(2)}</TableCell>
+                    <TableCell className="max-w-[150px] truncate"> {/* Adicionar célula para observações */}
+                      {reading.observations || "-"}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
