@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { Link, useLocation } from "react-router-dom"; // Importar useLocation
+import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useAuth } from "@/context/AuthContext"; // Importar useAuth
+// Removido: import { useAuth } from "@/context/AuthContext"; // Não é mais necessário para a mensagem de boas-vindas
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -16,7 +16,7 @@ interface HeaderProps {
 
 export const Header = ({ onMenuClick, pageTitle }: HeaderProps) => {
   const isMobile = useIsMobile();
-  const { currentUser } = useAuth(); // Obter o usuário atual
+  // Removido: const { currentUser } = useAuth(); // Não é mais necessário
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background p-4 flex items-center justify-between">
@@ -34,12 +34,12 @@ export const Header = ({ onMenuClick, pageTitle }: HeaderProps) => {
       </div>
 
       <div className="flex items-center space-x-4">
-        {/* Mensagem de boas-vindas */}
-        {currentUser && (
+        {/* Removido: Mensagem de boas-vindas */}
+        {/* {currentUser && (
           <span className="text-muted-foreground text-sm hidden md:block">
             Olá, {currentUser.email?.split('@')[0]}!
           </span>
-        )}
+        )} */}
         {/* Toggle de tema */}
         <ThemeToggle />
       </div>
