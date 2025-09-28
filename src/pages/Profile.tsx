@@ -8,17 +8,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { showSuccess, showError } from "@/utils/toast";
-import { updatePassword } from "firebase/auth";
+import { updatePassword, deleteUser } from "firebase/auth"; // Importar deleteUser
 import { Separator } from "@/components/ui/separator";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { UserProfileCard } from "@/components/UserProfileCard"; // Importar UserProfileCard
+import { UserProfileCard } from "@/components/UserProfileCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"; // Importar AlertDialog
 
 const Profile = () => {
-  const { currentUser, loading: loadingAuth } = useAuth();
+  const { currentUser, loading: loadingAuth, logout } = useAuth();
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // Estado para o AlertDialog de exclusão
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,10 +57,31 @@ const Profile = () => {
       setNewPassword("");
       setConfirmPassword("");
     } catch (error: any) {
-      showError(`Falha ao atualizar senha: ${error.message}`);
+      showError(`Falha ao atualizar senha: ${error.message}. Por favor, faça login novamente e tente.`);
       console.error("Password update error:", error);
     } finally {
       setLoadingSubmit(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!currentUser) {
+      showError("Você precisa estar logado para excluir a conta.");
+      navigate("/signin");
+      return;
+    }
+
+    setLoadingSubmit(true);
+    try {
+      await deleteUser(currentUser);
+      showSuccess("Sua conta foi excluída com sucesso.");
+      await logout(); // Desconecta o usuário após a exclusão
+    } catch (error: any) {
+      showError(`Falha ao excluir conta: ${error.message}. Por favor, faça login novamente e tente.`);
+      console.error("Delete account error:", error);
+    } finally {
+      setLoadingSubmit(false);
+      setIsDeleteDialogOpen(false);
     }
   };
 
@@ -98,6 +131,34 @@ const Profile = () => {
               {loadingSubmit ? "Atualizando..." : "Atualizar Senha"}
             </Button>
           </form>
+
+          <Separator />
+
+          <h3 className="text-lg font-semibold text-destructive">Excluir Conta</h3>
+          <p className="text-sm text-muted-foreground">
+            Esta ação é irreversível. Todos os seus dados de leitura e configurações serão permanentemente removidos.
+          </p>
+          <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" className="w-full" disabled={loadingSubmit}>
+                Excluir Minha Conta
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Tem certeza absoluta?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta ação não pode ser desfeita. Isso excluirá permanentemente sua conta e removerá seus dados de nossos servidores.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  {loadingSubmit ? "Excluindo..." : "Confirmar Exclusão"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </CardContent>
       </Card>
     </div>
