@@ -12,6 +12,7 @@ import {
   BarChart3,
   Settings as SettingsIcon,
   User,
+  Info, // Importar o ícone Info
   LogOut,
 } from "lucide-react";
 
@@ -61,6 +62,7 @@ const SidebarContent = ({ onClose }: SidebarContentProps) => {
     { to: "/reports", icon: BarChart3, label: "Relatórios" },
     { to: "/settings", icon: SettingsIcon, label: "Configurações" },
     { to: "/profile", icon: User, label: "Perfil" },
+    { to: "/about", icon: Info, label: "Sobre" }, // Adicionar link para a página Sobre
   ];
 
   return (

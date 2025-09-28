@@ -12,6 +12,7 @@ import Settings from "./pages/Settings";
 import DashboardReports from "./pages/DashboardReports";
 import ReadingsList from "./pages/ReadingsList";
 import Profile from "./pages/Profile";
+import About from "./pages/About"; // Importar a nova página About
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
@@ -86,6 +87,16 @@ const App = () => (
                   <ProtectedRoute>
                     <Layout>
                       <Profile />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/about" // Adicionar a rota para a página About
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <About />
                     </Layout>
                   </ProtectedRoute>
                 }
