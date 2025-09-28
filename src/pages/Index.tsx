@@ -1,15 +1,13 @@
-import { MadeWithDyad } from "@/components/made-with-dyad"; // MadeWithDyad será movido para o Layout
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle"; // ThemeToggle será movido para a Sidebar
 import { useNavigate } from "react-router-dom";
-import { Settings as SettingsIcon, BarChart3, Zap, DollarSign, Gauge, ListChecks, User } from "lucide-react";
+import { Zap, DollarSign, Gauge } from "lucide-react";
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  const { currentUser } = useAuth(); // Logout será movido para a Sidebar
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { readings, dailyConsumption, settings, loading, error } = useUserReadings();
 
@@ -19,7 +17,7 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex items-center justify-center h-full">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="ml-2 text-muted-foreground">Carregando dashboard...</p>
       </div>
@@ -28,7 +26,7 @@ const Index = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 text-center">
+      <div className="flex flex-col items-center justify-center h-full p-4 text-center">
         <h2 className="text-2xl font-bold text-destructive">Erro ao carregar dados</h2>
         <p className="text-muted-foreground mt-2">{error}</p>
         <Button onClick={() => navigate("/")} className="mt-4">
@@ -39,10 +37,9 @@ const Index = () => {
   }
 
   return (
-    <div className="flex flex-col"> {/* Removido min-h-screen e p-4/md:p-8, agora no Layout */}
+    <div className="flex flex-col h-full">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        {/* Botões de navegação e ThemeToggle removidos, agora na Sidebar */}
       </div>
 
       <div className="text-center mb-8">
@@ -98,8 +95,6 @@ const Index = () => {
           Registrar Nova Leitura
         </Button>
       </div>
-
-      {/* MadeWithDyad removido, agora no Layout */}
     </div>
   );
 };

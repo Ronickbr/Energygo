@@ -15,7 +15,7 @@ const DashboardReports = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex items-center justify-center h-full">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="ml-2 text-muted-foreground">Carregando relatórios...</p>
       </div>
@@ -24,7 +24,7 @@ const DashboardReports = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 text-center">
+      <div className="flex flex-col items-center justify-center h-full p-4 text-center">
         <h2 className="text-2xl font-bold text-destructive">Erro ao carregar dados</h2>
         <p className="text-muted-foreground mt-2">{error}</p>
         <Button onClick={() => navigate("/")} className="mt-4">
@@ -38,10 +38,9 @@ const DashboardReports = () => {
   const totalCost = dailyConsumption.reduce((sum, data) => sum + data.cost, 0);
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4 md:p-8"> {/* min-h-screen e p-4/md:p-8 removidos, agora no Layout */}
+    <div className="flex flex-col h-full">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Relatórios de Consumo</h1>
-        {/* Botão "Voltar ao Dashboard" removido */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">

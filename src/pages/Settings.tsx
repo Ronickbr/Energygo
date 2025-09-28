@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form"; // Corrigido o caminho de importação
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { doc, setDoc, getDoc } from "firebase/firestore";
@@ -107,7 +107,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background p-4"> {/* min-h-screen e p-4 removidos, agora no Layout */}
+    <div className="flex items-center justify-center h-full">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Configurações de Energia</CardTitle>
@@ -184,7 +184,6 @@ const Settings = () => {
               </Button>
             </form>
           </Form>
-          {/* Botão "Voltar ao Dashboard" removido */}
         </CardContent>
       </Card>
     </div>

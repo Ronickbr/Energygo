@@ -51,7 +51,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background p-4"> {/* min-h-screen e p-4 removidos, agora no Layout */}
+    <div className="flex items-center justify-center h-full">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Meu Perfil</CardTitle>
@@ -103,7 +103,6 @@ const Profile = () => {
               </Button>
             </form>
           </div>
-          {/* Botão "Voltar ao Dashboard" removido */}
         </CardContent>
       </Card>
     </div>
