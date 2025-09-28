@@ -6,7 +6,7 @@ import { useUserReadings, Reading } from "@/hooks/useUserReadings";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trash2, CalendarIcon } from "lucide-react";
+import { Trash2, CalendarIcon, ArrowUpDown } from "lucide-react"; // Importar ArrowUpDown
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,15 +24,19 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { DateRange } from "react-day-picker"; // Usar DateRange diretamente
+import { DateRange } from "react-day-picker";
+
+type SortColumn = "timestamp" | "value";
+type SortDirection = "asc" | "desc";
 
 const ReadingsList = () => {
   const { readings, loading, error, deleteReading } = useUserReadings();
   const navigate = useNavigate();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [readingToDelete, setReadingToDelete] = useState<string | null>(null);
-  // Usar o tipo DateRange diretamente
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [sortColumn, setSortColumn] = useState<SortColumn>("timestamp");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const handleDeleteClick = (readingId: string) => {
     setReadingToDelete(readingId);
@@ -47,20 +51,40 @@ const ReadingsList = () => {
     }
   };
 
-  const filteredReadings = readings.filter((reading) => {
-    if (!dateRange?.from && !dateRange?.to) {
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const filteredAndSortedReadings = [...readings]
+    .filter((reading) => {
+      if (!dateRange?.from && !dateRange?.to) {
+        return true;
+      }
+      const readingDate = new Date(reading.timestamp.setHours(0, 0, 0, 0));
+      
+      if (dateRange.from && readingDate < new Date(dateRange.from.setHours(0, 0, 0, 0))) {
+        return false;
+      }
+      if (dateRange.to && readingDate > new Date(dateRange.to.setHours(23, 59, 59, 999))) {
+        return false;
+      }
       return true;
-    }
-    const readingDate = new Date(reading.timestamp.setHours(0, 0, 0, 0)); // Normalize reading date to start of day
-    
-    if (dateRange.from && readingDate < new Date(dateRange.from.setHours(0, 0, 0, 0))) {
-      return false;
-    }
-    if (dateRange.to && readingDate > new Date(dateRange.to.setHours(23, 59, 59, 999))) {
-      return false;
-    }
-    return true;
-  });
+    })
+    .sort((a, b) => {
+      let compareValue = 0;
+      if (sortColumn === "timestamp") {
+        compareValue = a.timestamp.getTime() - b.timestamp.getTime();
+      } else if (sortColumn === "value") {
+        compareValue = a.value - b.value;
+      }
+
+      return sortDirection === "asc" ? compareValue : -compareValue;
+    });
 
   if (loading) {
     return <LoadingSpinner message="Carregando leituras..." />;
@@ -114,7 +138,7 @@ const ReadingsList = () => {
                 mode="range"
                 defaultMonth={dateRange?.from}
                 selected={dateRange}
-                onSelect={setDateRange} // Simplificado para usar setDateRange diretamente
+                onSelect={setDateRange}
                 numberOfMonths={2}
                 locale={ptBR}
               />
@@ -134,7 +158,7 @@ const ReadingsList = () => {
           <CardDescription>Visualize e gerencie suas leituras de energia.</CardDescription>
         </CardHeader>
         <CardContent>
-          {filteredReadings.length === 0 ? (
+          {filteredAndSortedReadings.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
               <p>Nenhuma leitura encontrada para o período selecionado.</p>
               {!dateRange?.from && (
@@ -148,13 +172,31 @@ const ReadingsList = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Data</TableHead>
-                    <TableHead>Leitura (kWh)</TableHead>
+                    <TableHead>
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSort("timestamp")}
+                        className="px-0 hover:bg-transparent"
+                      >
+                        Data
+                        <ArrowUpDown className={cn("ml-2 h-4 w-4", sortColumn === "timestamp" ? "opacity-100" : "opacity-40")} />
+                      </Button>
+                    </TableHead>
+                    <TableHead>
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSort("value")}
+                        className="px-0 hover:bg-transparent"
+                      >
+                        Leitura (kWh)
+                        <ArrowUpDown className={cn("ml-2 h-4 w-4", sortColumn === "value" ? "opacity-100" : "opacity-40")} />
+                      </Button>
+                    </TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredReadings.map((reading) => (
+                  {filteredAndSortedReadings.map((reading) => (
                     <TableRow key={reading.id}>
                       <TableCell>{reading.timestamp.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' })} {reading.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</TableCell>
                       <TableCell>{reading.value.toFixed(2)}</TableCell>
