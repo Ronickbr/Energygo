@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
-import "./pages/SignUp";
 import DataEntry from "./pages/DataEntry";
 import Settings from "./pages/Settings";
 import DashboardReports from "./pages/DashboardReports";
@@ -14,10 +13,9 @@ import ReadingsList from "./pages/ReadingsList";
 import Profile from "./pages/Profile";
 import About from "./pages/About";
 import { AuthProvider } from "@/context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
-import { Layout } from "@/components/Layout";
-import SignUp from "./pages/SignUp"; // Importar SignUp
+import SignUp from "./pages/SignUp";
+import ProtectedLayout from "./components/ProtectedLayout"; // Importar o novo componente
 
 const queryClient = new QueryClient();
 
@@ -35,71 +33,57 @@ const App = () => (
               <Route
                 path="/"
                 element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <Index />
-                    </Layout>
-                  </ProtectedRoute>
+                  <ProtectedLayout>
+                    <Index />
+                  </ProtectedLayout>
                 }
               />
               <Route
                 path="/data-entry"
                 element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <DataEntry />
-                    </Layout>
-                  </ProtectedRoute>
+                  <ProtectedLayout>
+                    <DataEntry />
+                  </ProtectedLayout>
                 }
               />
               <Route
                 path="/settings"
                 element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <Settings />
-                    </Layout>
-                  </ProtectedRoute>
+                  <ProtectedLayout>
+                    <Settings />
+                  </ProtectedLayout>
                 }
               />
               <Route
                 path="/reports"
                 element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <DashboardReports />
-                    </Layout>
-                  </ProtectedRoute>
+                  <ProtectedLayout>
+                    <DashboardReports />
+                  </ProtectedLayout>
                 }
               />
               <Route
                 path="/readings"
                 element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <ReadingsList />
-                    </Layout>
-                  </ProtectedRoute>
+                  <ProtectedLayout>
+                    <ReadingsList />
+                  </ProtectedLayout>
                 }
               />
               <Route
                 path="/profile"
                 element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <Profile />
-                    </Layout>
-                  </ProtectedRoute>
+                  <ProtectedLayout>
+                    <Profile />
+                  </ProtectedLayout>
                 }
               />
               <Route
                 path="/about"
                 element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <About />
-                    </Layout>
-                  </ProtectedRoute>
+                  <ProtectedLayout>
+                    <About />
+                  </ProtectedLayout>
                 }
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
