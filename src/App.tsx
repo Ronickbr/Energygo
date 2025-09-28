@@ -7,7 +7,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import DataEntry from "./pages/DataEntry"; // Importar a nova página
+import DataEntry from "./pages/DataEntry";
+import Settings from "./pages/Settings"; // Importar a nova página de configurações
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
@@ -34,10 +35,18 @@ const App = () => (
                 }
               />
               <Route
-                path="/data-entry" // Nova rota
+                path="/data-entry"
                 element={
                   <ProtectedRoute>
                     <DataEntry />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings" // Nova rota para configurações
+                element={
+                  <ProtectedRoute>
+                    <Settings />
                   </ProtectedRoute>
                 }
               />

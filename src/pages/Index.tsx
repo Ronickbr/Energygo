@@ -2,16 +2,21 @@ import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate
+import { useNavigate } from "react-router-dom";
+import { Settings as SettingsIcon } from "lucide-react"; // Importar ícone de configurações
 
 const Index = () => {
   const { currentUser, logout } = useAuth();
-  const navigate = useNavigate(); // Inicializar useNavigate
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4">
       <div className="absolute top-4 right-4 flex items-center space-x-2">
         <ThemeToggle />
+        <Button onClick={() => navigate("/settings")} variant="outline" size="icon">
+          <SettingsIcon className="h-[1.2rem] w-[1.2rem]" />
+          <span className="sr-only">Configurações</span>
+        </Button>
         <Button onClick={logout} variant="outline">
           Sair
         </Button>
