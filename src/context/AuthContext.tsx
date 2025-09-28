@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
 import { User, onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore"; // Importar setDoc
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { showSuccess, showError, showWarning } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && !loadingSettings && children}
+      {children}
     </AuthContext.Provider>
   );
 };
