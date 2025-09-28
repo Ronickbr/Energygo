@@ -12,9 +12,10 @@ import {
   BarChart3,
   Settings as SettingsIcon,
   User,
-  Info, // Importar o ícone Info
+  Info,
   LogOut,
 } from "lucide-react";
+import Logo from "@/components/Logo"; // Importar o componente Logo
 
 interface NavLinkProps {
   to: string;
@@ -62,12 +63,17 @@ const SidebarContent = ({ onClose }: SidebarContentProps) => {
     { to: "/reports", icon: BarChart3, label: "Relatórios" },
     { to: "/settings", icon: SettingsIcon, label: "Configurações" },
     { to: "/profile", icon: User, label: "Perfil" },
-    { to: "/about", icon: Info, label: "Sobre" }, // Adicionar link para a página Sobre
+    { to: "/about", icon: Info, label: "Sobre" },
   ];
 
   return (
     <div className="flex h-full flex-col justify-between p-4">
-      <div className="space-y-2">
+      <div className="mb-6 flex justify-center">
+        <Link to="/" onClick={onClose}>
+          <Logo className="h-12" /> {/* Adicionar a logo aqui */}
+        </Link>
+      </div>
+      <div className="space-y-2 flex-1">
         <h2 className="mb-4 text-lg font-semibold tracking-tight">Navegação</h2>
         {navLinks.map((link) => (
           <NavLink
