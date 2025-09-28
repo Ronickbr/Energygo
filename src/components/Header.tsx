@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Logo from "@/components/Logo"; // Importar o componente Logo
 
 interface HeaderProps {
   onMenuClick?: () => void;
+  pageTitle: string; // Nova prop para o título da página
 }
 
-export const Header = ({ onMenuClick }: HeaderProps) => {
+export const Header = ({ onMenuClick, pageTitle }: HeaderProps) => {
   const isMobile = useIsMobile();
 
   return (
@@ -27,7 +29,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
           </SheetTrigger>
         )}
         <Link to="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl">Energo</span>
+          <Logo className="h-8" /> {/* Usar a logo aqui */}
+          <span className="font-bold text-xl ml-2">{pageTitle}</span> {/* Título dinâmico */}
         </Link>
       </div>
       <ThemeToggle />
