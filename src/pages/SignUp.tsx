@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { showSuccess, showError } from "@/utils/toast";
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { AuthCard } from "@/components/AuthCard"; // Importar AuthCard
+import { AuthCard } from "@/components/AuthCard";
+import { AuthLayout } from "@/components/AuthLayout"; // Importar AuthLayout
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ const SignUp = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <AuthLayout>
       <AuthCard
         title="Cadastre-se"
         description="Crie sua conta para começar a gerenciar seu consumo de energia."
@@ -75,7 +76,7 @@ const SignUp = () => {
           </Link>
         </div>
       </AuthCard>
-    </div>
+    </AuthLayout>
   );
 };
 

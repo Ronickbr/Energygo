@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { showSuccess, showError } from "@/utils/toast";
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { AuthCard } from "@/components/AuthCard"; // Importar AuthCard
+import { AuthCard } from "@/components/AuthCard";
+import { AuthLayout } from "@/components/AuthLayout"; // Importar AuthLayout
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <AuthLayout>
       <AuthCard
         title="Entrar"
         description="Insira seu e-mail e senha para acessar sua conta."
@@ -75,7 +76,7 @@ const SignIn = () => {
           </Link>
         </div>
       </AuthCard>
-    </div>
+    </AuthLayout>
   );
 };
 
