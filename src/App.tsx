@@ -6,17 +6,18 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
+import "./pages/SignUp";
 import DataEntry from "./pages/DataEntry";
 import Settings from "./pages/Settings";
 import DashboardReports from "./pages/DashboardReports";
 import ReadingsList from "./pages/ReadingsList";
 import Profile from "./pages/Profile";
-import About from "./pages/About"; // Importar a nova página About
+import About from "./pages/About";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Layout } from "@/components/Layout";
+import SignUp from "./pages/SignUp"; // Importar SignUp
 
 const queryClient = new QueryClient();
 
@@ -92,7 +93,7 @@ const App = () => (
                 }
               />
               <Route
-                path="/about" // Adicionar a rota para a página About
+                path="/about"
                 element={
                   <ProtectedRoute>
                     <Layout>
@@ -102,7 +103,7 @@ const App = () => (
                 }
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} /> {/* NotFound agora é renderizado diretamente */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
         </BrowserRouter>

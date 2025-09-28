@@ -11,7 +11,6 @@ import { showSuccess, showError } from "@/utils/toast";
 import { updatePassword } from "firebase/auth";
 import { Separator } from "@/components/ui/separator";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { AuthLayout } from "@/components/AuthLayout";
 import { UserProfileCard } from "@/components/UserProfileCard"; // Importar UserProfileCard
 
 const Profile = () => {
@@ -58,7 +57,7 @@ const Profile = () => {
   }
 
   return (
-    <AuthLayout>
+    <div className="flex items-center justify-center h-full">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Meu Perfil</CardTitle>
@@ -101,7 +100,7 @@ const Profile = () => {
           </form>
         </CardContent>
       </Card>
-    </AuthLayout>
+    </div>
   );
 };
 
