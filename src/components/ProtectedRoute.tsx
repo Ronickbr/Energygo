@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Importar o novo componente
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -10,7 +11,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { currentUser, loading } = useAuth();
 
   if (loading) {
-    return <div>Carregando...</div>; // Ou um spinner de carregamento
+    return <LoadingSpinner message="Verificando autenticação..." />;
   }
 
   if (!currentUser) {
