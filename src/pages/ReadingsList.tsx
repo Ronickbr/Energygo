@@ -6,7 +6,7 @@ import { useUserReadings, Reading } from "@/hooks/useUserReadings";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trash2, CalendarIcon, ArrowUpDown, Pencil } from "lucide-react"; // Importar Pencil
+import { Trash2, CalendarIcon, ArrowUpDown, Pencil, Download } from "lucide-react"; // Importar Download
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +25,7 @@ import { format, startOfDay, endOfDay, isBefore, isAfter } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
+import { exportReadingsToCsv } from "@/utils/exportData"; // Importar a função de exportação
 
 type SortColumn = "timestamp" | "value" | "consumption";
 type SortDirection = "asc" | "desc";
@@ -63,6 +64,10 @@ const ReadingsList = () => {
       setSortColumn(column);
       setSortDirection("asc");
     }
+  };
+
+  const handleExport = () => {
+    exportReadingsToCsv(filteredAndSortedReadings, "leituras_energo");
   };
 
   // Primeiro, calcular o consumo para cada leitura com base na ordem cronológica
@@ -167,6 +172,9 @@ const ReadingsList = () => {
               Limpar Filtro
             </Button>
           )}
+          <Button onClick={handleExport} className="ml-2">
+            <Download className="mr-2 h-4 w-4" /> Exportar CSV
+          </Button>
         </div>
       </div>
 
