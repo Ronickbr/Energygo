@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useNavigate } from "react-router-dom";
-import { Settings as SettingsIcon } from "lucide-react"; // Importar ícone de configurações
+import { Settings as SettingsIcon, BarChart3 } from "lucide-react"; // Importar ícone de configurações e gráfico
 
 const Index = () => {
   const { currentUser, logout } = useAuth();
@@ -16,6 +16,10 @@ const Index = () => {
         <Button onClick={() => navigate("/settings")} variant="outline" size="icon">
           <SettingsIcon className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Configurações</span>
+        </Button>
+        <Button onClick={() => navigate("/reports")} variant="outline" size="icon">
+          <BarChart3 className="h-[1.2rem] w-[1.2rem]" />
+          <span className="sr-only">Relatórios</span>
         </Button>
         <Button onClick={logout} variant="outline">
           Sair

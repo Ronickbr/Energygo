@@ -8,7 +8,8 @@ import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import DataEntry from "./pages/DataEntry";
-import Settings from "./pages/Settings"; // Importar a nova página de configurações
+import Settings from "./pages/Settings";
+import DashboardReports from "./pages/DashboardReports"; // Importar a nova página de relatórios
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
@@ -43,10 +44,18 @@ const App = () => (
                 }
               />
               <Route
-                path="/settings" // Nova rota para configurações
+                path="/settings"
                 element={
                   <ProtectedRoute>
                     <Settings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/reports" // Nova rota para relatórios
+                element={
+                  <ProtectedRoute>
+                    <DashboardReports />
                   </ProtectedRoute>
                 }
               />
