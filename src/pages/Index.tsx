@@ -7,15 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  const { currentUser, userSettings, loading: loadingAuth, loadingSettings } = useAuth();
+  const { currentUser, userSettings } = useAuth(); // Removido loadingAuth e loadingSettings
   const navigate = useNavigate();
-  const { readings, dailyConsumption, loading: loadingReadings, error } = useUserReadings();
-
-  const loading = loadingAuth || loadingSettings || loadingReadings;
-
-  const latestReading = readings.length > 0 ? readings[readings.length - 1] : null;
-  const totalConsumption = dailyConsumption.reduce((sum, data) => sum + data.consumption, 0);
-  const totalCost = dailyConsumption.reduce((sum, data) => sum + data.cost, 0);
+  const { readings, dailyConsumption, loading, error } = useUserReadings(); // Usando o 'loading' consolidado de useUserReadings
 
   if (loading) {
     return (
@@ -37,6 +31,10 @@ const Index = () => {
       </div>
     );
   }
+
+  const latestReading = readings.length > 0 ? readings[readings.length - 1] : null;
+  const totalConsumption = dailyConsumption.reduce((sum, data) => sum + data.consumption, 0);
+  const totalCost = dailyConsumption.reduce((sum, data) => sum + data.cost, 0);
 
   return (
     <div className="flex flex-col h-full">

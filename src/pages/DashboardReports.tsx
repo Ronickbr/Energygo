@@ -8,14 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ConsumptionChart from "@/components/ConsumptionChart";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
-import { useAuth } from "@/context/AuthContext"; // Import useAuth
+import { useAuth } from "@/context/AuthContext";
 
 const DashboardReports = () => {
-  const { userSettings, loading: loadingAuth, loadingSettings } = useAuth(); // Get userSettings from AuthContext
-  const { dailyConsumption, monthlyConsumption, loading: loadingReadings, error } = useUserReadings();
+  const { userSettings } = useAuth(); // Removido loadingAuth e loadingSettings
+  const { dailyConsumption, monthlyConsumption, loading, error } = useUserReadings(); // Usando o 'loading' consolidado de useUserReadings
   const navigate = useNavigate();
-
-  const loading = loadingAuth || loadingSettings || loadingReadings;
 
   if (loading) {
     return (
