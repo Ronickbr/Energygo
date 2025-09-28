@@ -14,7 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { showSuccess, showError } from "@/utils/toast";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { useUserReadings } from "@/hooks/useUserReadings"; // Importar useUserReadings
 
 const formSchema = z.object({
   reading: z.preprocess(
@@ -28,8 +29,9 @@ const formSchema = z.object({
 
 const DataEntry = () => {
   const { currentUser, loading: loadingAuth } = useAuth();
+  const { readings, loading: loadingReadings } = useUserReadings(); // Obter leituras e estado de carregamento
   const navigate = useNavigate();
-  const [loadingSubmit, setLoadingSubmit] = useState(false); // Renomeado para evitar conflito com loadingAuth
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,12 +64,15 @@ const DataEntry = () => {
     }
   };
 
-  if (loadingAuth) {
+  if (loadingAuth || loadingReadings) { // Considerar o carregamento das leituras também
     return <LoadingSpinner message="Carregando dados do usuário..." />;
   }
 
+  const latestReading = readings.length > 0 ? readings[readings.length - 1] : null;
+  const latestReadingValue = latestReading ? latestReading.value.toFixed(2) : "0.00";
+
   return (
-    <div className="flex items-center justify-center"> {/* Removido h-full */}
+    <div className="flex items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Registrar Leitura de Energia</CardTitle>
@@ -89,7 +94,7 @@ const DataEntry = () => {
                         id="reading"
                         type="number"
                         step="0.01"
-                        placeholder="Ex: 1234.56"
+                        placeholder={`Última leitura: ${latestReadingValue} kWh`} // Usar a última leitura como placeholder
                         {...field}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
