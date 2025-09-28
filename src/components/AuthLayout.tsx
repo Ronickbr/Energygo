@@ -8,7 +8,7 @@ interface AuthLayoutProps {
 
 export const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 space-y-6">
       {children}
     </div>
   );

@@ -40,46 +40,44 @@ const SignUp = () => {
 
   return (
     <AuthLayout>
-      <div className="flex flex-col items-center space-y-6"> {/* Adicionar um wrapper para a logo e o card */}
-        <Logo className="h-16" /> {/* Adicionar a logo aqui */}
-        <AuthCard
-          title="Cadastre-se"
-          description="Crie sua conta para começar a gerenciar seu consumo de energia."
-        >
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loadingSubmit}>
-              {loadingSubmit ? "Cadastrando..." : "Cadastrar"}
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Já tem uma conta?{" "}
-            <Link to="/signin" className="underline">
-              Entrar
-            </Link>
+      <Logo className="h-16" /> {/* Adicionar a logo aqui */}
+      <AuthCard
+        title="Cadastre-se"
+        description="Crie sua conta para começar a gerenciar seu consumo de energia."
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="email">E-mail</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
-        </AuthCard>
-      </div>
+          <div>
+            <Label htmlFor="password">Senha</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={loadingSubmit}>
+            {loadingSubmit ? "Cadastrando..." : "Cadastrar"}
+          </Button>
+        </form>
+        <div className="mt-4 text-center text-sm">
+          Já tem uma conta?{" "}
+          <Link to="/signin" className="underline">
+            Entrar
+          </Link>
+        </div>
+      </AuthCard>
     </AuthLayout>
   );
 };
