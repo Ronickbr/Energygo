@@ -7,21 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ConsumptionChart from "@/components/ConsumptionChart";
 import { Separator } from "@/components/ui/separator";
-import { Loader2 } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
 import { useAuth } from "@/context/AuthContext";
 
 const DashboardReports = () => {
-  const { userSettings } = useAuth(); // Removido loadingAuth e loadingSettings
-  const { dailyConsumption, monthlyConsumption, loading, error } = useUserReadings(); // Usando o 'loading' consolidado de useUserReadings
+  const { userSettings } = useAuth();
+  const { dailyConsumption, monthlyConsumption, loading, error } = useUserReadings();
   const navigate = useNavigate();
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="ml-2 text-muted-foreground">Carregando relatórios...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Carregando relatórios..." />;
   }
 
   if (error) {

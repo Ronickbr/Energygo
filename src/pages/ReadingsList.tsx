@@ -6,7 +6,7 @@ import { useUserReadings, Reading } from "@/hooks/useUserReadings";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
 
 const ReadingsList = () => {
   const { readings, loading, error, deleteReading } = useUserReadings();
@@ -39,12 +40,7 @@ const ReadingsList = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="ml-2 text-muted-foreground">Carregando leituras...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Carregando leituras..." />;
   }
 
   if (error) {

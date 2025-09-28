@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { showSuccess, showError } from "@/utils/toast";
 import { Separator } from "@/components/ui/separator";
 import { regionalTariffs, getRegionFromCep, TariffRegion } from "@/utils/tariffData";
-import { Loader2 } from "lucide-react"; // Importação adicionada
+import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
 
 const formSchema = z.object({
   cep: z.string().regex(/^\d{5}-?\d{3}$/, "CEP inválido. Use o formato XXXXX-XXX ou XXXXXXXX.").optional().or(z.literal("")),
@@ -32,7 +32,7 @@ const formSchema = z.object({
 const Settings = () => {
   const { currentUser, userSettings, loadingSettings, refetchUserSettings } = useAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false); // Renomeado para evitar conflito com loadingSettings
   const [detectedRegion, setDetectedRegion] = useState<TariffRegion | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -84,7 +84,7 @@ const Settings = () => {
       return;
     }
 
-    setLoading(true);
+    setLoadingSubmit(true);
     try {
       const userDocRef = doc(db, "users", currentUser.uid);
       await setDoc(userDocRef, {
@@ -97,17 +97,12 @@ const Settings = () => {
       showError(`Falha ao salvar configurações: ${error.message}`);
       console.error("Settings save error:", error);
     } finally {
-      setLoading(false);
+      setLoadingSubmit(false);
     }
   };
 
   if (loadingSettings) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="ml-2 text-muted-foreground">Carregando configurações...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Carregando configurações..." />;
   }
 
   return (
@@ -183,8 +178,8 @@ const Settings = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Salvando..." : "Salvar Configurações"}
+              <Button type="submit" className="w-full" disabled={loadingSubmit}>
+                {loadingSubmit ? "Salvando..." : "Salvar Configurações"}
               </Button>
             </form>
           </Form>

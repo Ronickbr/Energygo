@@ -4,20 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { Zap, DollarSign, Gauge } from "lucide-react";
 import { useUserReadings } from "@/hooks/useUserReadings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
 
 const Index = () => {
-  const { currentUser, userSettings } = useAuth(); // Removido loadingAuth e loadingSettings
+  const { currentUser, userSettings } = useAuth();
   const navigate = useNavigate();
-  const { readings, dailyConsumption, loading, error } = useUserReadings(); // Usando o 'loading' consolidado de useUserReadings
+  const { readings, dailyConsumption, loading, error } = useUserReadings();
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="ml-2 text-muted-foreground">Carregando dashboard...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Carregando dashboard..." />;
   }
 
   if (error) {

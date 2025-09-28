@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form"; // Corrigido o caminho de importação
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { showSuccess, showError } from "@/utils/toast";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Importar LoadingSpinner
 
 const formSchema = z.object({
   reading: z.preprocess(
@@ -26,9 +27,9 @@ const formSchema = z.object({
 });
 
 const DataEntry = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, loading: loadingAuth } = useAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false); // Renomeado para evitar conflito com loadingAuth
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,7 +45,7 @@ const DataEntry = () => {
       return;
     }
 
-    setLoading(true);
+    setLoadingSubmit(true);
     try {
       await addDoc(collection(db, `users/${currentUser.uid}/readings`), {
         value: values.reading,
@@ -57,9 +58,13 @@ const DataEntry = () => {
       showError(`Falha ao registrar leitura: ${error.message}`);
       console.error("Data entry error:", error);
     } finally {
-      setLoading(false);
+      setLoadingSubmit(false);
     }
   };
+
+  if (loadingAuth) {
+    return <LoadingSpinner message="Carregando dados do usuário..." />;
+  }
 
   return (
     <div className="flex items-center justify-center h-full">
@@ -93,8 +98,8 @@ const DataEntry = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Registrando..." : "Registrar Leitura"}
+              <Button type="submit" className="w-full" disabled={loadingSubmit}>
+                {loadingSubmit ? "Registrando..." : "Registrar Leitura"}
               </Button>
             </form>
           </Form>
