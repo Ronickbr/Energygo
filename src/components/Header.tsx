@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react"; // Importar LogOut
 import { useIsMobile } from "@/hooks/use-mobile";
-// Removido: import { useAuth } from "@/context/AuthContext"; // Não é mais necessário para a mensagem de boas-vindas
+import { useAuth } from "@/context/AuthContext"; // Importar useAuth
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -16,7 +16,11 @@ interface HeaderProps {
 
 export const Header = ({ onMenuClick, pageTitle }: HeaderProps) => {
   const isMobile = useIsMobile();
-  // Removido: const { currentUser } = useAuth(); // Não é mais necessário
+  const { currentUser, logout } = useAuth(); // Obter currentUser e logout do AuthContext
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background p-4 flex items-center justify-between">
@@ -34,12 +38,12 @@ export const Header = ({ onMenuClick, pageTitle }: HeaderProps) => {
       </div>
 
       <div className="flex items-center space-x-4">
-        {/* Removido: Mensagem de boas-vindas */}
-        {/* {currentUser && (
-          <span className="text-muted-foreground text-sm hidden md:block">
-            Olá, {currentUser.email?.split('@')[0]}!
-          </span>
-        )} */}
+        {currentUser && ( // Renderizar o botão de logout apenas se o usuário estiver logado
+          <Button variant="ghost" size="icon" onClick={handleLogout} className="text-destructive hover:text-destructive">
+            <LogOut className="h-[1.2rem] w-[1.2rem]" />
+            <span className="sr-only">Sair</span>
+          </Button>
+        )}
         {/* Toggle de tema */}
         <ThemeToggle />
       </div>
