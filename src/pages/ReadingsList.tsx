@@ -6,7 +6,7 @@ import { useUserReadings, Reading } from "@/hooks/useUserReadings";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trash2, CalendarIcon, ArrowUpDown } from "lucide-react";
+import { Trash2, CalendarIcon, ArrowUpDown, Pencil } from "lucide-react"; // Importar Pencil
 import {
   AlertDialog,
   AlertDialogAction,
@@ -235,7 +235,15 @@ const ReadingsList = () => {
                       <TableCell className="max-w-[200px] truncate"> {/* Adicionar célula para observações */}
                         {reading.observations || "-"}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right flex items-center justify-end space-x-2"> {/* Ajustar para múltiplos botões */}
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => navigate(`/data-entry/${reading.id}`)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                          <span className="sr-only">Editar leitura</span>
+                        </Button>
                         <Button
                           variant="destructive"
                           size="icon"

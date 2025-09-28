@@ -15,7 +15,7 @@ import About from "./pages/About";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "./components/ThemeProvider";
 import SignUp from "./pages/SignUp";
-import ProtectedLayout from "./components/ProtectedLayout"; // Importar o novo componente
+import ProtectedLayout from "./components/ProtectedLayout";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +40,14 @@ const App = () => (
               />
               <Route
                 path="/data-entry"
+                element={
+                  <ProtectedLayout>
+                    <DataEntry />
+                  </ProtectedLayout>
+                }
+              />
+              <Route // Nova rota para edição de leituras
+                path="/data-entry/:id"
                 element={
                   <ProtectedLayout>
                     <DataEntry />
